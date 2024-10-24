@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "lib": ["ESNext"],
+    "module": "Node16",
+    "target": "es2022",
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "Node16"
+  },
+  "include": ["./index.ts", "./src/**/*.ts"],
+  "exclude": ["node_modules", "dist"],
+}
