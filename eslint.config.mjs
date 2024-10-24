@@ -23,7 +23,7 @@ export default [
       prettier,
     },
 
-    ignores: ['eslint.config.mjs'],
+    ignores: ['front', 'eslint.config.mjs'],
 
     languageOptions: {
       globals: {
