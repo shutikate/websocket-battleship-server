@@ -2,16 +2,20 @@ import { WebSocketServer } from 'ws';
 import { randomUUID } from 'node:crypto';
 import { registration } from '../responses/registration';
 import { createRoom, updateRoom } from '../responses/updateRoom';
+import { connections } from '../models/users';
 import { Data } from '../types';
 
 export const createWebSocketServer = (port: number) => {
   const wss = new WebSocketServer({ port });
 
   wss.on('connection', (ws) => {
+    const userID = randomUUID();
+    connections.set(userID, ws);
+
     ws.on('error', console.error);
+    connections.set(userID, ws);
 
     ws.on('message', (message) => {
-      const userID = randomUUID();
       try {
         const messageToString = message.toString();
         const data: Data = JSON.parse(messageToString);
@@ -19,10 +23,10 @@ export const createWebSocketServer = (port: number) => {
           registration(data, ws, userID);
         }
         if (data.type === 'create_room') {
-          createRoom(data, ws, userID);
+          createRoom(data, userID);
         }
         if (data.type === 'add_user_to_room') {
-          updateRoom(data, ws, userID);
+          updateRoom(data, userID);
         }
       } catch {
         ws.send(JSON.stringify({ error: 'Request is invalid' }));
