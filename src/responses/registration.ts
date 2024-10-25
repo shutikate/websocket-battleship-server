@@ -1,10 +1,11 @@
 import { WebSocket } from 'ws';
-import { randomUUID } from 'node:crypto';
+// import { randomUUID } from 'node:crypto';
 import { returnWinners } from './winners';
+import { returnRooms } from './updateRoom';
 import { Data, RegistrationResponse, User } from '../types';
 import { players } from '../users/users';
 
-export const registration = (data: Data, ws: WebSocket) => {
+export const registration = (data: Data, ws: WebSocket, userID: string) => {
   const user: User = JSON.parse(data.data);
   const response: RegistrationResponse = {
     type: data.type,
@@ -18,10 +19,11 @@ export const registration = (data: Data, ws: WebSocket) => {
   };
 
   if (players.size === 0) {
-    const id = randomUUID();
-    players.set(id, { ...user, index: id });
-    ws.send(JSON.stringify({ ...response, data: JSON.stringify({ ...response.data, index: id }) }));
+    // const id = randomUUID();
+    players.set(userID, { ...user, index: userID });
+    ws.send(JSON.stringify({ ...response, data: JSON.stringify({ ...response.data, index: userID }) }));
     returnWinners(data, ws);
+    returnRooms(data, ws);
     return;
   }
 
@@ -30,6 +32,7 @@ export const registration = (data: Data, ws: WebSocket) => {
       if (player.password === user.password) {
         ws.send(JSON.stringify({ ...response, data: JSON.stringify({ ...response.data, index: player.index }) }));
         returnWinners(data, ws);
+        returnRooms(data, ws);
       } else {
         ws.send(
           JSON.stringify({
@@ -44,10 +47,11 @@ export const registration = (data: Data, ws: WebSocket) => {
         );
       }
     } else {
-      const id = randomUUID();
-      players.set(id, { ...user, index: id });
-      ws.send(JSON.stringify({ ...response, data: JSON.stringify({ ...response.data, index: id }) }));
+      // const id = randomUUID();
+      players.set(userID, { ...user, index: userID });
+      ws.send(JSON.stringify({ ...response, data: JSON.stringify({ ...response.data, index: userID }) }));
       returnWinners(data, ws);
+      returnRooms(data, ws);
     }
   }
 };

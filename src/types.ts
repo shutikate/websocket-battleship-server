@@ -9,6 +9,25 @@ export interface Data {
   id: number;
 }
 
+export interface Player {
+  name: string;
+  password: string;
+  index: number | string;
+}
+
+export interface Winner {
+  name: string;
+  wins: number;
+}
+
+export interface Room {
+  roomId: number | string;
+  roomUsers: {
+    name: string;
+    index: number | string;
+  }[];
+}
+
 export interface RegistrationResponse {
   type: string;
   data: {
@@ -27,15 +46,4 @@ export interface UpdateWinnersResponse {
     wins: number;
   }[];
   id: number;
-}
-
-export interface Player {
-  name: string;
-  password: string;
-  index: number | string;
-}
-
-export interface Winner {
-  name: string;
-  wins: number;
 }
