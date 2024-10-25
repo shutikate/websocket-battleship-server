@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { createGame } from './createGame';
 import { players, connections } from '../models/users';
 import { rooms } from '../models/rooms';
 import { Data } from '../types';
@@ -11,6 +12,7 @@ export const updateRoom = (data: Data, userID: string) => {
     room.roomUsers.push({ name: player.name, index: player.index });
   }
   returnRooms(data);
+  createGame(data, roomId);
   rooms.delete(roomId);
 };
 

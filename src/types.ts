@@ -28,6 +28,15 @@ export interface Room {
   }[];
 }
 
+export interface Game {
+  type: string;
+  data: {
+    idGame: number | string;
+    idPlayer: number | string;
+  };
+  id: number;
+}
+
 export interface RegistrationResponse {
   type: string;
   data: {
