@@ -19,3 +19,23 @@ export interface RegistrationResponse {
   };
   id: number;
 }
+
+export interface UpdateWinnersResponse {
+  type: string;
+  data: {
+    name: string;
+    wins: number;
+  }[];
+  id: number;
+}
+
+export interface Player {
+  name: string;
+  password: string;
+  index: number | string;
+}
+
+export interface Winner {
+  name: string;
+  wins: number;
+}
