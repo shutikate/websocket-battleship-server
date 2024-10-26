@@ -6,6 +6,7 @@ import { players } from '../models/users';
 
 export const registration = (data: Data, ws: WebSocket, userID: string) => {
   const user: User = JSON.parse(data.data);
+
   const response: RegistrationResponse = {
     type: data.type,
     data: {

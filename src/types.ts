@@ -28,13 +28,31 @@ export interface Room {
   }[];
 }
 
-export interface Game {
+export interface StartGame {
   type: string;
   data: {
     idGame: number | string;
     idPlayer: number | string;
   };
   id: number;
+}
+
+export interface Ship {
+  position: string;
+  direction: boolean;
+  length: number;
+  type: 'small' | 'medium' | 'large' | 'huge';
+}
+
+export interface GameRoom {
+  player1: {
+    ships: Ship[];
+    indexPlayer: number | string;
+  };
+  player2: {
+    ships: Ship[];
+    indexPlayer: number | string;
+  };
 }
 
 export interface RegistrationResponse {
@@ -54,5 +72,11 @@ export interface UpdateWinnersResponse {
     name: string;
     wins: number;
   }[];
+  id: number;
+}
+
+export interface StartGameResponse {
+  type: string;
+  data: string;
   id: number;
 }

@@ -11,9 +11,9 @@ export const updateRoom = (data: Data, userID: string) => {
   if (room && player) {
     room.roomUsers.push({ name: player.name, index: player.index });
   }
-  returnRooms(data);
   createGame(data, roomId);
   rooms.delete(roomId);
+  returnRooms(data);
 };
 
 export const createRoom = (data: Data, userID: string) => {
