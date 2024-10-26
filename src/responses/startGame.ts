@@ -1,3 +1,4 @@
+import { setTurn } from './setTurn';
 import { Data, GameRoom, StartGameResponse } from '../types';
 import { games } from '../models/games';
 import { connections } from '../models/users';
@@ -26,9 +27,15 @@ export const startGame = (data: Data, game: GameRoom) => {
     id: data.id,
   };
 
-  const player1WS = connections.get(String(game?.player1.indexPlayer));
-  const player2WS = connections.get(String(game?.player2.indexPlayer));
+  const { indexPlayer: idPlayer1 } = game.player1;
+  const { indexPlayer: idPlayer2 } = game.player2;
 
-  player1WS?.send(JSON.stringify(response));
-  player2WS?.send(JSON.stringify(response));
+  const wsPlayer1 = connections.get(String(idPlayer1));
+  const wsPlayer2 = connections.get(String(idPlayer2));
+
+  if (wsPlayer1 && wsPlayer2) {
+    wsPlayer1.send(JSON.stringify(response));
+    wsPlayer2.send(JSON.stringify(response));
+    setTurn(idPlayer1, idPlayer2);
+  }
 };
