@@ -1,8 +1,9 @@
 import { WebSocket } from 'ws';
-import { returnWinners } from './winners';
-import { returnRooms } from './updateRoom';
-import { Data, RegistrationResponse, User } from '../types';
-import { players } from '../models/users';
+import { returnWinners } from '../winners/winners';
+import { returnRooms } from '../updateRoom/updateRoom';
+import { Data } from '../../types';
+import { User, RegistrationResponse } from './types';
+import { players, connections } from '../../models/users';
 
 export const registration = (data: Data, ws: WebSocket, userID: string) => {
   const user: User = JSON.parse(data.data);
@@ -20,9 +21,10 @@ export const registration = (data: Data, ws: WebSocket, userID: string) => {
 
   if (players.size === 0) {
     players.set(userID, { ...user, index: userID });
+    connections.set(userID, ws);
     ws.send(JSON.stringify({ ...response, data: JSON.stringify({ ...response.data, index: userID }) }));
     returnWinners(data);
-    returnRooms(data);
+    returnRooms(data.id);
     return;
   }
 
@@ -31,7 +33,7 @@ export const registration = (data: Data, ws: WebSocket, userID: string) => {
       if (player.password === user.password) {
         ws.send(JSON.stringify({ ...response, data: JSON.stringify({ ...response.data, index: player.index }) }));
         returnWinners(data);
-        returnRooms(data);
+        returnRooms(data.id);
       } else {
         ws.send(
           JSON.stringify({
@@ -50,7 +52,8 @@ export const registration = (data: Data, ws: WebSocket, userID: string) => {
   }
 
   players.set(userID, { ...user, index: userID });
+  connections.set(userID, ws);
   ws.send(JSON.stringify({ ...response, data: JSON.stringify({ ...response.data, index: userID }) }));
   returnWinners(data);
-  returnRooms(data);
+  returnRooms(data.id);
 };

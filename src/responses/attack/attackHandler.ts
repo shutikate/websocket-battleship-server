@@ -1,25 +1,7 @@
-import { connections } from '../../models/users';
+import { setTurn } from './setTurn';
+import { createAttackFeedback } from './createAttackFeedback';
 import { games } from '../../models/games';
-import { Data, GameRoom } from '../../types';
-import { AttackData, AttackFeedback, Turn } from './types';
-
-export const setTurn = (game: GameRoom) => {
-  const currentPlayer = game.currentPlayer;
-  const currentPlayerIndex = game[currentPlayer].indexPlayer;
-
-  const response: Turn = {
-    type: 'turn',
-    data: { currentPlayer: currentPlayerIndex },
-  };
-
-  const wsPlayer1 = connections.get(String(game.player1.indexPlayer));
-  const wsPlayer2 = connections.get(String(game.player2.indexPlayer));
-
-  if (wsPlayer1 && wsPlayer2) {
-    wsPlayer1.send(JSON.stringify({ ...response, data: JSON.stringify(response.data) }));
-    wsPlayer2.send(JSON.stringify({ ...response, data: JSON.stringify(response.data) }));
-  }
-};
+import { AttackData } from './types';
 
 export const getAttackStatus = (attackShip: { x: number; y: number }[] | undefined) => {
   if (!attackShip) {
@@ -31,34 +13,8 @@ export const getAttackStatus = (attackShip: { x: number; y: number }[] | undefin
   return 'shot';
 };
 
-export const createAttackFeedback = (
-  attackData: AttackData,
-  game: GameRoom,
-  id: number,
-  status: 'miss' | 'killed' | 'shot'
-) => {
-  const { x, y, indexPlayer } = attackData;
-  const response: AttackFeedback = {
-    type: 'attack',
-    data: {
-      position: { x, y },
-      currentPlayer: indexPlayer,
-      status: status,
-    },
-    id,
-  };
-
-  const wsPlayer1 = connections.get(String(game.player1.indexPlayer));
-  const wsPlayer2 = connections.get(String(game.player2.indexPlayer));
-
-  if (wsPlayer1 && wsPlayer2) {
-    wsPlayer1.send(JSON.stringify({ ...response, data: JSON.stringify(response.data) }));
-    wsPlayer2.send(JSON.stringify({ ...response, data: JSON.stringify(response.data) }));
-  }
-};
-
-export const attackHandler = (data: Data) => {
-  const attackData: AttackData = JSON.parse(data.data);
+export const attackHandler = (data: string) => {
+  const attackData: AttackData = JSON.parse(data);
   const { gameId, x, y, indexPlayer } = attackData;
 
   const game = games.get(String(gameId));
@@ -90,7 +46,7 @@ export const attackHandler = (data: Data) => {
 
   const status = getAttackStatus(attackShip);
 
-  createAttackFeedback(attackData, game, data.id, status);
+  createAttackFeedback(attackData, game, status);
 
   if (attackShip) {
     game[defendPlayer].ships = defenderShips.map((ship) =>

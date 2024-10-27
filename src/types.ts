@@ -1,8 +1,3 @@
-export interface User {
-  name: string;
-  password: string;
-}
-
 export interface Data {
   type: string;
   data: string;
@@ -28,16 +23,6 @@ export interface Room {
   }[];
 }
 
-export interface Ship {
-  position: {
-    x: number;
-    y: number;
-  };
-  direction: boolean;
-  length: number;
-  type: 'small' | 'medium' | 'large' | 'huge';
-}
-
 export interface GameRoom {
   player1: {
     ships: { x: number; y: number }[][];
@@ -50,24 +35,4 @@ export interface GameRoom {
     attacks: { x: number; y: number }[];
   };
   currentPlayer: 'player1' | 'player2';
-}
-
-export interface RegistrationResponse {
-  type: string;
-  data: {
-    name: string;
-    index: number | string;
-    error: boolean;
-    errorText: string;
-  };
-  id: number;
-}
-
-export interface UpdateWinnersResponse {
-  type: string;
-  data: {
-    name: string;
-    wins: number;
-  }[];
-  id: number;
 }

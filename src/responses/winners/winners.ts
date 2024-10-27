@@ -1,8 +1,11 @@
-import { UpdateWinnersResponse, Data, User } from '../types';
-import { winners, connections } from '../models/users';
+import { Data } from '../../types';
+import { UpdateWinnersResponse } from './types';
+import { User } from '../registration/types';
+import { winners, connections } from '../../models/users';
 
 export const updateWinners = (data: Data, id: string) => {
   const user: User = JSON.parse(data.data);
+
   if (winners.has(id)) {
     const winner = winners.get(id);
     if (winner) {
@@ -19,6 +22,7 @@ export const returnWinners = (data: Data) => {
     data: Array.from(winners.values()).map(({ name, wins }) => ({ name, wins })),
     id: data.id,
   };
+
   connections.values().forEach((connection) => {
     connection.send(JSON.stringify({ ...response, data: JSON.stringify(response.data) }));
   });

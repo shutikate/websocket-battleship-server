@@ -23,3 +23,8 @@ export interface Turn {
     currentPlayer: number | string;
   };
 }
+
+export interface RandomAttackData {
+  gameId: number | string;
+  indexPlayer: number | string;
+}

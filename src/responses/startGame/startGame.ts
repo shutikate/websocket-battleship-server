@@ -1,4 +1,4 @@
-import { setTurn } from '../attack/attackHandler';
+import { setTurn } from '../attack/setTurn';
 import { Data, GameRoom } from '../../types';
 import { AddShipsData, Position, StartGameResponse } from './types';
 import { games } from '../../models/games';
@@ -19,7 +19,6 @@ export const addShips = (data: Data) => {
     }
     return shipPositions;
   });
-  console.log(positions);
 
   if (!game) {
     games.set(String(gameId), {

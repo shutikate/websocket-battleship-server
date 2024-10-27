@@ -1,21 +1,19 @@
 import { WebSocketServer } from 'ws';
 import { randomUUID } from 'node:crypto';
-import { registration } from '../responses/registration';
-import { createRoom, updateRoom } from '../responses/updateRoom';
+import { registration } from '../responses/registration/registration';
+import { createRoom, updateRoom } from '../responses/updateRoom/updateRoom';
 import { addShips } from '../responses/startGame/startGame';
-import { connections } from '../models/users';
 import { Data } from '../types';
 import { attackHandler } from '../responses/attack/attackHandler';
+import { randomAttack } from '../responses/attack/randomAttack';
 
 export const createWebSocketServer = (port: number) => {
   const wss = new WebSocketServer({ port });
 
   wss.on('connection', (ws) => {
     const userID = randomUUID();
-    connections.set(userID, ws);
 
     ws.on('error', console.error);
-    connections.set(userID, ws);
 
     ws.on('message', (message) => {
       try {
@@ -33,7 +31,10 @@ export const createWebSocketServer = (port: number) => {
           addShips(data);
         }
         if (data.type === 'attack') {
-          attackHandler(data);
+          attackHandler(data.data);
+        }
+        if (data.type === 'randomAttack') {
+          randomAttack(data);
         }
       } catch {
         ws.send(JSON.stringify({ error: 'Request is invalid' }));
