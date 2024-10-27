@@ -28,17 +28,11 @@ export interface Room {
   }[];
 }
 
-export interface StartGame {
-  type: string;
-  data: {
-    idGame: number | string;
-    idPlayer: number | string;
-  };
-  id: number;
-}
-
 export interface Ship {
-  position: string;
+  position: {
+    x: number;
+    y: number;
+  };
   direction: boolean;
   length: number;
   type: 'small' | 'medium' | 'large' | 'huge';
@@ -46,13 +40,16 @@ export interface Ship {
 
 export interface GameRoom {
   player1: {
-    ships: Ship[];
+    ships: { x: number; y: number }[][];
     indexPlayer: number | string;
+    attacks: { x: number; y: number }[];
   };
   player2: {
-    ships: Ship[];
+    ships: { x: number; y: number }[][];
     indexPlayer: number | string;
+    attacks: { x: number; y: number }[];
   };
+  currentPlayer: 'player1' | 'player2';
 }
 
 export interface RegistrationResponse {
@@ -72,11 +69,5 @@ export interface UpdateWinnersResponse {
     name: string;
     wins: number;
   }[];
-  id: number;
-}
-
-export interface StartGameResponse {
-  type: string;
-  data: string;
   id: number;
 }

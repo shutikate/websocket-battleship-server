@@ -2,9 +2,10 @@ import { WebSocketServer } from 'ws';
 import { randomUUID } from 'node:crypto';
 import { registration } from '../responses/registration';
 import { createRoom, updateRoom } from '../responses/updateRoom';
-import { addShips } from '../responses/startGame';
+import { addShips } from '../responses/startGame/startGame';
 import { connections } from '../models/users';
 import { Data } from '../types';
+import { attackHandler } from '../responses/attack/attackHandler';
 
 export const createWebSocketServer = (port: number) => {
   const wss = new WebSocketServer({ port });
@@ -31,6 +32,9 @@ export const createWebSocketServer = (port: number) => {
         if (data.type === 'add_ships') {
           addShips(data);
         }
+        if (data.type === 'attack') {
+          attackHandler(data);
+        }
       } catch {
         ws.send(JSON.stringify({ error: 'Request is invalid' }));
       }
@@ -49,9 +53,7 @@ export const createWebSocketServer = (port: number) => {
   });
 
   process.on('SIGINT', () => {
-    wss.close(() => {
-      process.exit();
-    });
+    wss.close();
   });
 
   console.log(`WebSocket server started on ws://localhost:${port}`);

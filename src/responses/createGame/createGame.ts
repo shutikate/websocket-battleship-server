@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { Data, StartGame } from '../types';
-import { rooms } from '../models/rooms';
-import { connections } from '../models/users';
+import { Data } from '../../types';
+import { CreateGame } from '../createGame/types';
+import { rooms } from '../../models/rooms';
+import { connections } from '../../models/users';
 
 export const createGame = (data: Data, roomID: string) => {
   const idGame = randomUUID();
@@ -9,7 +10,7 @@ export const createGame = (data: Data, roomID: string) => {
   const room = rooms.get(roomID);
   const users = room?.roomUsers;
 
-  const response: StartGame = {
+  const response: CreateGame = {
     type: 'create_game',
     data: { idGame, idPlayer: '' },
     id: data.id,
