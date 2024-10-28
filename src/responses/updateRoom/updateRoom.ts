@@ -31,9 +31,27 @@ export const updateRoom = (data: string, userID: string) => {
   const { indexRoom } = updateRoomData;
   const room = rooms.get(indexRoom);
   const player = players.get(userID);
+
   if (room && player) {
+    const isPlayerInRoom = room.roomUsers.some((user) => user.index === player.index);
+
+    if (isPlayerInRoom) {
+      const ws = connections.get(userID);
+      if (ws) {
+        ws.send(
+          JSON.stringify({
+            type: 'error',
+            data: 'User is already in the room',
+            id: 0,
+          })
+        );
+      }
+      return;
+    }
+
     room.roomUsers.push({ name: player.name, index: player.index });
   }
+
   createGame(indexRoom);
   rooms.delete(indexRoom);
   returnRooms();
