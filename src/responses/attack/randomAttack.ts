@@ -1,7 +1,6 @@
 import { attackHandler } from './attackHandler';
 import { games } from '../../models/games';
 import { RandomAttackData } from './types';
-import { Data } from '../../types';
 
 const setRandomCoordinates = () => {
   return {
@@ -10,8 +9,8 @@ const setRandomCoordinates = () => {
   };
 };
 
-export const randomAttack = (data: Data) => {
-  const attackData: RandomAttackData = JSON.parse(data.data);
+export const randomAttack = (data: string) => {
+  const attackData: RandomAttackData = JSON.parse(data);
   const { gameId, indexPlayer } = attackData;
 
   const { x, y } = setRandomCoordinates();

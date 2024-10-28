@@ -3,7 +3,8 @@ import { createAttackFeedback } from './createAttackFeedback';
 import { games } from '../../models/games';
 import { AttackData } from './types';
 import { ShipsWithSurroundedCells } from '../startGame/types';
-import { finish } from '../finishGame/finishGame';
+import { finishGame } from '../finishGame/finishGame';
+import { returnWinners } from '../winners/winners';
 
 export const getAttackStatus = (defenderShip: ShipsWithSurroundedCells | undefined) => {
   if (!defenderShip) {
@@ -27,7 +28,7 @@ export const attackHandler = (data: string) => {
   }
 
   const attackPlayer = game.player1.indexPlayer === indexPlayer ? 'player1' : 'player2';
-  const defendPlayer = game.player1.indexPlayer === indexPlayer ? 'player2' : 'player1';
+  const defenderPlayer = game.player1.indexPlayer === indexPlayer ? 'player2' : 'player1';
 
   if (game.currentPlayer !== attackPlayer) {
     console.error('Not your turn');
@@ -43,7 +44,7 @@ export const attackHandler = (data: string) => {
 
   game[attackPlayer].attacks.push({ x, y });
 
-  const defenderShips = Array.from(game[defendPlayer].ships.values());
+  const defenderShips = Array.from(game[defenderPlayer].ships.values());
   const defenderShip = defenderShips.find((ship) =>
     ship.shipPositions.some((position) => position.x === x && position.y === y)
   );
@@ -56,8 +57,12 @@ export const attackHandler = (data: string) => {
     defenderShip.shipPositions = defenderShip.shipPositions.filter((position) => position.x !== x || position.y !== y);
 
     const remainingShips = defenderShips.filter((ship) => ship.shipPositions.length > 0);
+
     if (remainingShips.length === 0) {
-      finish();
+      const winPlayerIndex = String(game[attackPlayer].indexPlayer);
+      const defenderPlayerIndex = game[defenderPlayer].indexPlayer;
+      finishGame(winPlayerIndex, defenderPlayerIndex);
+      returnWinners();
     }
   } else {
     const nextPlayer = game.currentPlayer === 'player1' ? 'player2' : 'player1';

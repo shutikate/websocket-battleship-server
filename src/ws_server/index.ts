@@ -22,19 +22,19 @@ export const createWebSocketServer = (port: number) => {
           registration(data, ws, userID);
         }
         if (data.type === 'create_room') {
-          createRoom(data, userID);
+          createRoom(userID);
         }
         if (data.type === 'add_user_to_room') {
-          updateRoom(data, userID);
+          updateRoom(data.data, userID);
         }
         if (data.type === 'add_ships') {
-          addShips(data);
+          addShips(data.data);
         }
         if (data.type === 'attack') {
           attackHandler(data.data);
         }
         if (data.type === 'randomAttack') {
-          randomAttack(data);
+          randomAttack(data.data);
         }
       } catch {
         ws.send(JSON.stringify({ error: 'Request is invalid' }));
