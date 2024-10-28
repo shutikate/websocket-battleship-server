@@ -15,7 +15,6 @@ export const randomAttack = (data: Data) => {
   const { gameId, indexPlayer } = attackData;
 
   const { x, y } = setRandomCoordinates();
-  console.log(x, y);
 
   const game = games.get(String(gameId));
 

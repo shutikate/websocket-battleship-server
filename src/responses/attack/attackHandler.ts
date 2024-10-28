@@ -2,12 +2,14 @@ import { setTurn } from './setTurn';
 import { createAttackFeedback } from './createAttackFeedback';
 import { games } from '../../models/games';
 import { AttackData } from './types';
+import { ShipsWithSurroundedCells } from '../startGame/types';
+import { finish } from '../finishGame/finishGame';
 
-export const getAttackStatus = (attackShip: { x: number; y: number }[] | undefined) => {
-  if (!attackShip) {
+export const getAttackStatus = (defenderShip: ShipsWithSurroundedCells | undefined) => {
+  if (!defenderShip) {
     return 'miss';
   }
-  if (attackShip.length === 1) {
+  if (defenderShip.shipPositions.length === 1) {
     return 'killed';
   }
   return 'shot';
@@ -41,17 +43,22 @@ export const attackHandler = (data: string) => {
 
   game[attackPlayer].attacks.push({ x, y });
 
-  const defenderShips = game[defendPlayer].ships;
-  const attackShip = defenderShips.find((ship) => ship.some((position) => position.x === x && position.y === y));
+  const defenderShips = Array.from(game[defendPlayer].ships.values());
+  const defenderShip = defenderShips.find((ship) =>
+    ship.shipPositions.some((position) => position.x === x && position.y === y)
+  );
 
-  const status = getAttackStatus(attackShip);
+  const status = getAttackStatus(defenderShip);
 
-  createAttackFeedback(attackData, game, status);
+  createAttackFeedback(attackData, defenderShip, game, status);
 
-  if (attackShip) {
-    game[defendPlayer].ships = defenderShips.map((ship) =>
-      ship.filter((position) => position.x !== x || position.y !== y)
-    );
+  if (defenderShip) {
+    defenderShip.shipPositions = defenderShip.shipPositions.filter((position) => position.x !== x || position.y !== y);
+
+    const remainingShips = defenderShips.filter((ship) => ship.shipPositions.length > 0);
+    if (remainingShips.length === 0) {
+      finish();
+    }
   } else {
     const nextPlayer = game.currentPlayer === 'player1' ? 'player2' : 'player1';
     game.currentPlayer = nextPlayer;

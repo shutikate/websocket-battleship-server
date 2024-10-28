@@ -1,3 +1,5 @@
+import { ShipsWithSurroundedCells } from './responses/startGame/types';
+
 export interface Data {
   type: string;
   data: string;
@@ -23,14 +25,19 @@ export interface Room {
   }[];
 }
 
+export interface Ship {
+  shipPositions: { x: number; y: number }[];
+  surroundedCells: { x: number; y: number }[];
+}
+
 export interface GameRoom {
   player1: {
-    ships: { x: number; y: number }[][];
+    ships: Map<string, ShipsWithSurroundedCells>;
     indexPlayer: number | string;
     attacks: { x: number; y: number }[];
   };
   player2: {
-    ships: { x: number; y: number }[][];
+    ships: Map<string, ShipsWithSurroundedCells>;
     indexPlayer: number | string;
     attacks: { x: number; y: number }[];
   };

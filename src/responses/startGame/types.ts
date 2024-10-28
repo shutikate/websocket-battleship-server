@@ -3,6 +3,11 @@ export interface Position {
   y: number;
 }
 
+export interface ShipsWithSurroundedCells {
+  shipPositions: Position[];
+  surroundedCells: Position[];
+}
+
 export interface Ship {
   position: Position;
   direction: boolean;
